@@ -1,27 +1,22 @@
 module Main exposing (main)
 
 import Browser
-import Browser.Events exposing (onAnimationFrameDelta)
 import Canvas exposing (rect, shapes)
 import Canvas.Settings exposing (fill)
 import Canvas.Settings.Advanced exposing (rotate, transform, translate)
 import Color
-import Html exposing (Html, div)
+import Html exposing (Html, div, button, text)
+import Html.Events exposing (onClick)
 import Html.Attributes exposing (style)
 
-
-type alias Model =
-    { count : Float }
     
 type alias SubSquares =
     { size : Float
     , squares : List (Float, Float) }
 
+type alias Model = Int
 
-type Msg
-    = Frame Float
-
-main = view
+main = Browser.sandbox { init = init, update = update, view = view }
 
 width =
     600
@@ -38,18 +33,40 @@ centerX =
 centerY =
     height / 2
 
+init : Model
+init =
+  0
 
-view =
+-- UPDATE
+
+type Msg = Increment | Decrement
+
+update : Msg -> Model -> Model
+update msg model =
+  case msg of
+    Increment ->
+      model + 1
+
+    Decrement ->
+      model - 1
+
+-- VIEW
+
+view model =
     div
         [ style "display" "flex"
         , style "justify-content" "center"
         , style "align-items" "center"
         ]
-        [ Canvas.toHtml
+        [ 
+        button [ onClick Decrement ] [ text "-" ]
+        , div [] [ text (String.fromInt model) ]
+        , button [ onClick Increment ] [ text "+" ]
+        , Canvas.toHtml
             ( width, height )
             [ style "border" "8px solid rgba(0,0,0,0.1)" ]
             [ clearScreen
-            , shapes [ fill Color.lightPurple ] (List.concat (sieRemoved 5 600.0))
+            , shapes [ fill Color.lightPurple ] (List.concat (sieRemoved model 600.0))
             ]
         ]
 
