@@ -45,10 +45,10 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     Increment ->
-      model + 1
+      if model < 6 then model + 1 else model
 
     Decrement ->
-      model - 1
+      if model > 0 then model - 1 else model
 
 -- VIEW
 
